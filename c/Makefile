@@ -1,12 +1,13 @@
-CC=cc
-CFLAGS=-Wall -c
+CC=gcc
+CFLAGS=-std=c99 -pedantic -Wall -c
+LDFLAGS=-lm
 SRCS=color.c main.c
 OBJS=$(SRCS:%.c=%.o)
 
 .PHONY: all clean run
 
-all: $(OBJS)
-	$(CC) $(OBJS) -o raytracer
+all: $(OBJS) $(SRCS)
+	$(CC) $(LDFLAGS) $(OBJS) -o raytracer
 
 clean:
 	rm -f *.o
