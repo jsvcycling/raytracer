@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-std=c99 -pedantic -Wall -c
 LDFLAGS=-lm
-SRCS=color.c main.c
+SRCS=color.c main.c shape.c
 OBJS=$(SRCS:%.c=%.o)
 
 .PHONY: all clean run
