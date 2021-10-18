@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-std=c99 -pedantic -Wall -g -c
 LDFLAGS=-lm
-SRCS=color.c main.c shape.c
+SRCS=camera.c color.c main.c shape.c utils.c
 OBJS=$(SRCS:%.c=%.o)
 
 .PHONY: all clean run
