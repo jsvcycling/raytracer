@@ -45,7 +45,7 @@ void calc_ray_dir(
 int main() {
 	/* Image */
 	const double aspect_ratio = 16.0 / 9.0;
-	const int image_width = 768;
+	const int image_width = 1920;
 	const int image_height = (int)(image_width / aspect_ratio);
 
 	/* World */

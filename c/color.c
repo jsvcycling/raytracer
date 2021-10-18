@@ -6,10 +6,10 @@ void write_color(FILE *f, const vec3_t *color) {
 	fprintf(f, "%i %i %i\n", (int)out.x, (int)out.y, (int)out.z);
 }
 
-void calc_ray_color(vec3_t *color, const ray_t *ray, const shapes_t *world) {
+void calc_ray_color(vec3_t *color, const ray_t *ray, const shapes_t *shapes) {
 	rayHit_t hit;
 
-	if (shapes_hit(world, ray, 0, HUGE_VAL, &hit)) {
+	if (shapes_hit(shapes, ray, 0, HUGE_VAL, &hit)) {
 		vec3_t ray_color = { .x = 1, .y = 1, .z = 1 };
 		vec3_add(&ray_color, &ray_color, &hit.normal);
 		vec3_mul(color, &ray_color, 0.5);
