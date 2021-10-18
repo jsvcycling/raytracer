@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-std=c99 -pedantic -Wall -c
+CFLAGS=-std=c99 -pedantic -Wall -g -c
 LDFLAGS=-lm
 SRCS=color.c main.c shape.c
 OBJS=$(SRCS:%.c=%.o)

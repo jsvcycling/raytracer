@@ -1,20 +1,26 @@
 #ifndef SHAPE_H
 #define SHAPE_H
 
-typedef enum {
-	SPHERE,
-} shapeType_t;
+#include "ray.h"
+#include "vec3.h"
 
 typedef struct {
-	shapeType_t type;
-} shape_t;
+	void **shapes;
+	int *types;
+	unsigned int capacity;
+	unsigned int count;
+} shapes_t;
 
-typedef struct {
-	shape_t super;
+/* Create a new shape list. */
+shapes_t *shapes_new(const unsigned int capacity);
 
-	/* TODO */
-} sphere_t;
+/* Deallocate a shape list (and all shapes in it). */
+void shapes_free(shapes_t *shapes);
 
-double shape_test_hit(shape_t *shape);
+/* Test if any shapes are hit by a ray, and if so, where the hit occurred. */
+int shapes_hit(const shapes_t *shapes, const ray_t *ray, const double t_min, const double t_max, rayHit_t *hit);
+
+/* Add a sphere to the shape list. */
+void shapes_add_sphere(shapes_t *shapes, const vec3_t origin, const double radius);
 
 #endif /* SHAPE_H */

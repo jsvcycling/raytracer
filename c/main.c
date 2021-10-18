@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "color.h"
+#include "shape.h"
 #include "vec3.h"
 
 void calc_lower_left_corner(
@@ -47,6 +48,15 @@ int main() {
 	const int image_width = 768;
 	const int image_height = (int)(image_width / aspect_ratio);
 
+	/* World */
+	shapes_t *world = shapes_new(64);
+
+	vec3_t sphere_origin = { .x = 0, .y = 0, .z = -1 };
+	shapes_add_sphere(world, sphere_origin, 0.5);
+
+	vec3_t ground_origin = { .x = 0, .y = -100.5, .z = -1 };
+	shapes_add_sphere(world, ground_origin, 100);
+
 	/* Camera */
 	double viewport_height = 2.0;
 	double viewport_width = viewport_height * aspect_ratio;
@@ -86,13 +96,15 @@ int main() {
 			);
 
 			ray_t ray = {
-				.orig = origin,
-				.dir = ray_dir,
+				.origin = origin,
+				.direction = ray_dir,
 			};
 
 			vec3_t color;
-			calc_ray_color(&color, &ray);
+			calc_ray_color(&color, &ray, world);
 			write_color(stdout, &color);
 		}
 	}
+
+	shapes_free(world);
 }
