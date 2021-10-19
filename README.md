@@ -4,7 +4,7 @@ This repository contains my implementation of the [Ray Tracing in One
 Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html) book
 written in several different programming languages.
 
-Generally the samples will only reach the end of section 8.5 as the chapters
+Generally the samples will only reach the end of chapter 8 as the chapters
 after this point are further enhancements of the core ray tracer. These
 additional features may be added in the future.
 
