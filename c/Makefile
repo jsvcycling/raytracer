@@ -1,4 +1,4 @@
-CC=gcc
+CC=cc
 CFLAGS=-std=c99 -pedantic -Wall -g -c
 LDFLAGS=-lm
 SRCS=camera.c color.c main.c shape.c utils.c
