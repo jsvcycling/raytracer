@@ -85,10 +85,13 @@ static inline void vec3_copy(vec3_t *dest, const vec3_t *src) {
 	memcpy(dest, src, sizeof(vec3_t));
 }
 
-static inline void vec3_neg(vec3_t *v) {
-	v->x = -(v->x);
-	v->y = -(v->y);
-	v->z = -(v->z);
+static inline vec3_t vec3_neg(const vec3_t *v) {
+	vec3_t out = {
+		.x = -v->x,
+		.y = -v->y,
+		.z = -v->z,
+	};
+	return out;
 }
 
 static inline double vec3_dot(const vec3_t *a, const vec3_t *b) {
@@ -122,9 +125,14 @@ static inline vec3_t vec3_rand_in_unit_sphere() {
 	}
 }
 
-static inline vec3_t vec3_rand_unit_vector() {
+static inline vec3_t vec3_rand_in_hemisphere(const vec3_t *normal) {
 	vec3_t v = vec3_rand_in_unit_sphere();
-	return vec3_normalize(&v);
+
+	if (vec3_dot(&v, normal) > 0) {
+		return v;
+	} else {
+		return vec3_neg(&v);
+	}
 }
 
 #endif /* MATH_H */

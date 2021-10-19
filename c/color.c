@@ -22,8 +22,7 @@ vec3_t calc_ray_color(const ray_t *ray, const shapes_t *shapes, const int level)
 
 	if (shapes_hit(shapes, ray, 0.001, HUGE_VAL, &hit)) {
 		vec3_t target = hit.point;
-		vec3_self_add(&target, &hit.normal);
-		vec3_t rand_vec = vec3_rand_unit_vector();
+		vec3_t rand_vec = vec3_rand_in_hemisphere(&hit.normal);
 		vec3_self_add(&target, &rand_vec);
 
 		ray_t subRay = {
