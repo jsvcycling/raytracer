@@ -2,16 +2,14 @@
 
 #include <stdlib.h>
 
-void calc_lower_left_corner(
-		vec3_t *dest,
+vec3_t calc_lower_left_corner(
 		const vec3_t *origin,
 		const vec3_t *horizontal,
 		const vec3_t *vertical,
 		const double focal_length
 );
 
-void calc_ray_dir(
-		vec3_t *dest,
+vec3_t calc_ray_dir(
 		const vec3_t *lower_left_corner,
 		const double u,
 		const double v,
@@ -26,12 +24,11 @@ camera_t *camera_new(void) {
 	double viewport_width = aspect_ratio * viewport_height;
 	double focal_length = 1.0;
 
-	camera_t *camera = (camera_t *)calloc(1, sizeof(camera_t));
-	camera->horizontal.x = viewport_width;
-	camera->vertical.y = viewport_height;
+	camera_t *camera = (camera_t *)malloc(sizeof(camera_t));
+	camera->horizontal = vec3_new(viewport_width, 0, 0);
+	camera->vertical = vec3_new(0, viewport_height, 0);
 
-	calc_lower_left_corner(
-			&camera->lower_left_corner,
+	camera->lower_left_corner = calc_lower_left_corner(
 			&camera->origin,
 			&camera->horizontal,
 			&camera->vertical,
@@ -41,11 +38,15 @@ camera_t *camera_new(void) {
 	return camera;
 }
 
+void camera_free(camera_t *camera) {
+	free(camera);
+}
+
 ray_t camera_get_ray(const camera_t *camera, const double u, const double v) {
 	ray_t ray;
-	vec3_copy(&ray.origin, &camera->origin);
-	calc_ray_dir(
-			&ray.direction,
+	ray.origin = camera->origin;
+
+	ray.direction = calc_ray_dir(
 			&camera->lower_left_corner,
 			u,
 			v,
@@ -57,8 +58,7 @@ ray_t camera_get_ray(const camera_t *camera, const double u, const double v) {
 	return ray;
 }
 
-void calc_lower_left_corner(
-		vec3_t *dest,
+vec3_t calc_lower_left_corner(
 		const vec3_t *origin,
 		const vec3_t *horizontal,
 		const vec3_t *vertical,
@@ -69,14 +69,14 @@ void calc_lower_left_corner(
 
 	vec3_t focal = { .x = 0, .y = 0, .z = focal_length };
 
-	vec3_copy(dest, origin);
-	vec3_self_sub(dest, &temp_h);
-	vec3_self_sub(dest, &temp_v);
-	vec3_self_sub(dest, &focal);
+	vec3_t result = *origin;
+	vec3_self_sub(&result, &temp_h);
+	vec3_self_sub(&result, &temp_v);
+	vec3_self_sub(&result, &focal);
+	return result;
 }
 
-void calc_ray_dir(
-		vec3_t *dest,
+vec3_t calc_ray_dir(
 		const vec3_t *lower_left_corner,
 		const double u,
 		const double v,
@@ -87,9 +87,10 @@ void calc_ray_dir(
 	vec3_t temp_h = vec3_mul(horizontal, u);
 	vec3_t temp_v = vec3_mul(vertical, v);
 
-	vec3_copy(dest, lower_left_corner);
-	vec3_self_add(dest, &temp_h);
-	vec3_self_add(dest, &temp_v);
-	vec3_self_sub(dest, origin);
+	vec3_t result = *lower_left_corner;
+	vec3_self_add(&result, &temp_h);
+	vec3_self_add(&result, &temp_v);
+	vec3_self_sub(&result, origin);
+	return result;
 }
 

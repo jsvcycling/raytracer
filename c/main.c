@@ -11,16 +11,12 @@ int main() {
 	const double aspect_ratio = 16.0 / 9.0;
 	const int image_width = 1280;
 	const int image_height = (int)(image_width / aspect_ratio);
-	const int samples_per_pixel = 100;
+	const int samples_per_pixel = 25;
 
 	/* World */
 	shapes_t *world = shapes_new(64);
-
-	vec3_t sphere_origin = vec3_new(0, 0, -1);
-	shapes_add_sphere(world, sphere_origin, 0.5);
-
-	vec3_t ground_origin = vec3_new(0, -100.5, -1);
-	shapes_add_sphere(world, ground_origin, 100);
+	shapes_add_sphere(world, vec3_new(0, 0, -1), 0.5);
+	shapes_add_sphere(world, vec3_new(0, -100.5, -1), 100);
 
 	/* Camera */
 	camera_t *camera = camera_new();
@@ -31,7 +27,7 @@ int main() {
 	for (int j = image_height; j >= 0; --j) {
 		fprintf(stderr, "Scanlines left: %i\n", j);
 		for (int i = 0; i < image_width; ++i) {
-			vec3_t pixel_color = { .x = 0, .y = 0, .z = 0 };
+			vec3_t pixel_color = vec3_new(0, 0, 0);
 
 			for (int s = 0; s < samples_per_pixel; s++) {
 				double u = (i + randd()) / (double)(image_width - 1);
@@ -46,5 +42,6 @@ int main() {
 		}
 	}
 
+	camera_free(camera);
 	shapes_free(world);
 }
