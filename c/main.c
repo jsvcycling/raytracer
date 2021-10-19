@@ -16,10 +16,10 @@ int main() {
 	/* World */
 	shapes_t *world = shapes_new(64);
 
-	vec3_t sphere_origin = { .x = 0, .y = 0, .z = -1 };
+	vec3_t sphere_origin = vec3_new(0, 0, -1);
 	shapes_add_sphere(world, sphere_origin, 0.5);
 
-	vec3_t ground_origin = { .x = 0, .y = -100.5, .z = -1 };
+	vec3_t ground_origin = vec3_new(0, -100.5, -1);
 	shapes_add_sphere(world, ground_origin, 100);
 
 	/* Camera */
@@ -38,9 +38,8 @@ int main() {
 				double v = (j + randd()) / (double)(image_height - 1);
 
 				ray_t ray = camera_get_ray(camera, u, v);
-				vec3_t color;
-				calc_ray_color(&color, &ray, world);
-				vec3_add(&pixel_color, &pixel_color, &color);
+				vec3_t color = calc_ray_color(&ray, world);
+				vec3_self_add(&pixel_color, &color);
 			}
 
 			write_color(stdout, &pixel_color, samples_per_pixel);

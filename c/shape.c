@@ -75,7 +75,7 @@ void shapes_add_sphere(shapes_t *shapes, const vec3_t origin, const double radiu
 int shape_hit_sphere(const sphere_t *sphere, const ray_t *ray, const double t_min, const double t_max, rayHit_t *hit) {
 	vec3_t oc;
 	vec3_copy(&oc, &ray->origin);
-	vec3_sub(&oc, &oc, &sphere->origin);
+	vec3_self_sub(&oc, &sphere->origin);
 
 	double a = vec3_dot(&ray->direction, &ray->direction);
 	double half_b = vec3_dot(&oc, &ray->direction);
@@ -92,12 +92,12 @@ int shape_hit_sphere(const sphere_t *sphere, const ray_t *ray, const double t_mi
 	}
 
 	hit->t = root;
-	ray_at(&hit->point, ray, root);
+	hit->point = ray_at(ray, root);
 
 	vec3_t outward_normal;
 	vec3_copy(&outward_normal, &hit->point);
-	vec3_sub(&outward_normal, &outward_normal, &sphere->origin);
-	vec3_mul(&outward_normal, &outward_normal, 1 / sphere->radius);
+	vec3_self_sub(&outward_normal, &sphere->origin);
+	vec3_self_mul(&outward_normal, 1 / sphere->radius);
 	ray_hit_set_face_normal(hit, ray, &outward_normal);
 
 	return 1;

@@ -15,12 +15,9 @@ typedef struct {
 	int frontFace;
 } rayHit_t;
 
-static inline void ray_at(vec3_t *dest, const ray_t *ray, const double t) {
-	vec3_t temp_dir;
-	vec3_mul(&temp_dir, &ray->direction, t);
-
-	vec3_copy(dest, &ray->origin);
-	vec3_add(dest, dest, &temp_dir);
+static inline vec3_t ray_at(const ray_t *ray, const double t) {
+	vec3_t temp_dir = vec3_mul(&ray->direction, t);
+	return vec3_add(&ray->origin, &temp_dir);
 }
 
 static inline void ray_hit_set_face_normal(rayHit_t *hit, const ray_t *ray, const vec3_t *normal) {

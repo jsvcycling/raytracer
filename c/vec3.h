@@ -11,40 +11,66 @@ typedef struct {
 	double x, y, z;
 } vec3_t;
 
-/* Perform element-wise addition between two vectors. */
-static inline void vec3_add(vec3_t *dest, const vec3_t *a, const vec3_t *b) {
-	dest->x = a->x + b->x;
-	dest->y = a->y + b->y;
-	dest->z = a->z + b->z;
+static inline vec3_t vec3_new(const double x, const double y, const double z) {
+	vec3_t out = { .x = x, .y = y, .z = z };
+	return out;
 }
 
-/* Perform element-wise subtraction between two vectors. */
-static inline void vec3_sub(vec3_t *dest, const vec3_t *a, const vec3_t *b) {
-	dest->x = a->x - b->x;
-	dest->y = a->y - b->y;
-	dest->z = a->z - b->z;
+static inline vec3_t vec3_add(const vec3_t *a, const vec3_t *b) {
+	vec3_t out = {
+		.x = a->x + b->x,
+		.y = a->y + b->y,
+		.z = a->z + b->z,
+	};
+	return out;
 }
 
-/* Scale a vector by multiplying it by a constant. */
-static inline void vec3_mul(vec3_t *dest, const vec3_t *v, const double d) {
-	dest->x = v->x * d;
-	dest->y = v->y * d;
-	dest->z = v->z * d;
+static inline void vec3_self_add(vec3_t *a, const vec3_t *b) {
+	a->x += b->x;
+	a->y += b->y;
+	a->z += b->z;
 }
 
-/* Copy the value of one vector to another. */
+static inline vec3_t vec3_sub(const vec3_t *a, const vec3_t *b) {
+	vec3_t out = {
+		.x = a->x - b->x,
+		.y = a->y - b->y,
+		.z = a->z - b->z,
+	};
+	return out;
+}
+
+static inline void vec3_self_sub(vec3_t *a, const vec3_t *b) {
+	a->x -= b->x;
+	a->y -= b->y;
+	a->z -= b->z;
+}
+
+static inline vec3_t vec3_mul(const vec3_t *v, const double d) {
+	vec3_t out = {
+		.x = v->x * d,
+		.y = v->y * d,
+		.z = v->z * d,
+	};
+	return out;
+}
+
+static inline void vec3_self_mul(vec3_t *v, const double d) {
+	v->x *= d;
+	v->y *= d;
+	v->z *= d;
+}
+
 static inline void vec3_copy(vec3_t *dest, const vec3_t *src) {
-	memcpy(dest, src, sizeof(double) * 3);
+	memcpy(dest, src, sizeof(vec3_t));
 }
 
-/* Negate a vector in-place. */
 static inline void vec3_neg(vec3_t *v) {
 	v->x = -(v->x);
 	v->y = -(v->y);
 	v->z = -(v->z);
 }
 
-/* Compute the dot product between two vectors. */
 static inline double vec3_dot(const vec3_t *a, const vec3_t *b) {
 	return a->x * b->x + a->y * b->y + a->z * b->z;
 }
@@ -62,9 +88,9 @@ static inline double vec3_length(const vec3_t *v) {
 }
 
 /* Normalize a vector to be a unit vector. */
-static inline void vec3_normalize(vec3_t *dest, const vec3_t *v) {
+static inline vec3_t vec3_normalize(const vec3_t *v) {
 	double length = 1 / vec3_length(v);
-	vec3_mul(dest, v, length);
+	return vec3_mul(v, length);
 }
 
 #endif /* MATH_H */

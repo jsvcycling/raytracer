@@ -64,16 +64,15 @@ void calc_lower_left_corner(
 		const vec3_t *vertical,
 		const double focal_length
 ) {
-	vec3_t temp_h, temp_v;
-	vec3_mul(&temp_h, horizontal, 0.5);
-	vec3_mul(&temp_v, vertical, 0.5);
+	vec3_t temp_h = vec3_mul(horizontal, 0.5);
+	vec3_t temp_v = vec3_mul(vertical, 0.5);
 
 	vec3_t focal = { .x = 0, .y = 0, .z = focal_length };
 
 	vec3_copy(dest, origin);
-	vec3_sub(dest, dest, &temp_h);
-	vec3_sub(dest, dest, &temp_v);
-	vec3_sub(dest, dest, &focal);
+	vec3_self_sub(dest, &temp_h);
+	vec3_self_sub(dest, &temp_v);
+	vec3_self_sub(dest, &focal);
 }
 
 void calc_ray_dir(
@@ -85,13 +84,12 @@ void calc_ray_dir(
 		const vec3_t *vertical,
 		const vec3_t *origin
 ) {
-	vec3_t temp_h, temp_v;
-	vec3_mul(&temp_h, horizontal, u);
-	vec3_mul(&temp_v, vertical, v);
+	vec3_t temp_h = vec3_mul(horizontal, u);
+	vec3_t temp_v = vec3_mul(vertical, v);
 
 	vec3_copy(dest, lower_left_corner);
-	vec3_add(dest, dest, &temp_h);
-	vec3_add(dest, dest, &temp_v);
-	vec3_sub(dest, dest, origin);
+	vec3_self_add(dest, &temp_h);
+	vec3_self_add(dest, &temp_v);
+	vec3_self_sub(dest, origin);
 }
 
