@@ -12,6 +12,7 @@ int main() {
 	const int image_width = 1280;
 	const int image_height = (int)(image_width / aspect_ratio);
 	const int samples_per_pixel = 25;
+	const int max_depth = 50;
 
 	/* World */
 	shapes_t *world = shapes_new(64);
@@ -34,7 +35,7 @@ int main() {
 				double v = (j + randd()) / (double)(image_height - 1);
 
 				ray_t ray = camera_get_ray(camera, u, v);
-				vec3_t color = calc_ray_color(&ray, world);
+				vec3_t color = calc_ray_color(&ray, world, max_depth);
 				vec3_self_add(&pixel_color, &color);
 			}
 

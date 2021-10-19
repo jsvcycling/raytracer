@@ -1,25 +1,38 @@
 #include "color.h"
 
-double clamp(const double val, const double low, const double high);
-
 void write_color(FILE *f, const vec3_t *color, const int samples_per_pixel) {
 	double scale = 1.0 / samples_per_pixel;
-	vec3_t out = vec3_mul(color, scale);
 
-	int r = (int)(clamp(out.x, 0, 0.999) * 256);
-	int g = (int)(clamp(out.y, 0, 0.999) * 256);
-	int b = (int)(clamp(out.z, 0, 0.999) * 256);
+	/* Gamma-correction */
+	double r = sqrt(scale * color->x);
+	double g = sqrt(scale * color->y);
+	double b = sqrt(scale * color->z);
 
-	fprintf(f, "%i %i %i\n", r, g, b);
+	r = (clamp(r, 0, 0.999) * 256);
+	g = (clamp(g, 0, 0.999) * 256);
+	b = (clamp(b, 0, 0.999) * 256);
+
+	fprintf(f, "%i %i %i\n", (int)r, (int)g, (int)b);
 }
 
-vec3_t calc_ray_color(const ray_t *ray, const shapes_t *shapes) {
+vec3_t calc_ray_color(const ray_t *ray, const shapes_t *shapes, const int level) {
 	rayHit_t hit;
 
-	if (shapes_hit(shapes, ray, 0, HUGE_VAL, &hit)) {
-		vec3_t ray_color = vec3_new(1, 1, 1);
-		vec3_self_add(&ray_color, &hit.normal);
-		return vec3_mul(&ray_color, 0.5);
+	if (level <= 0) return vec3_new(0, 0, 0);
+
+	if (shapes_hit(shapes, ray, 0.001, HUGE_VAL, &hit)) {
+		vec3_t target = hit.point;
+		vec3_self_add(&target, &hit.normal);
+		vec3_t rand_vec = vec3_rand_unit_vector();
+		vec3_self_add(&target, &rand_vec);
+
+		ray_t subRay = {
+			.origin = hit.point,
+			.direction = vec3_sub(&target, &hit.point),
+		};
+
+		vec3_t subRayColor = calc_ray_color(&subRay, shapes, level - 1);
+		return vec3_mul(&subRayColor, 0.5);
 	}
 
 	vec3_t unit_dir = vec3_normalize(&ray->direction);
@@ -33,10 +46,4 @@ vec3_t calc_ray_color(const ray_t *ray, const shapes_t *shapes) {
 	vec3_self_mul(&b, t);
 
 	return vec3_add(&a, &b);
-}
-
-double clamp(const double val, const double low, const double high) {
-	if (val < low) return low;
-	if (val > high) return high;
-	return val;
 }

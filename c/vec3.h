@@ -1,6 +1,8 @@
 #ifndef MATH_H
 #define MATH_H
 
+#include "utils.h"
+
 #include <math.h>
 #include <string.h>
 
@@ -13,6 +15,24 @@ typedef struct {
 
 static inline vec3_t vec3_new(const double x, const double y, const double z) {
 	vec3_t out = { .x = x, .y = y, .z = z };
+	return out;
+}
+
+static inline vec3_t vec3_rand() {
+	vec3_t out = {
+		.x = randd(),
+		.y = randd(),
+		.z = randd(),
+	};
+	return out;
+}
+
+static inline vec3_t vec3_rand_rand(const double min, const double max) {
+	vec3_t out = {
+		.x = randd_range(min, max),
+		.y = randd_range(min, max),
+		.z = randd_range(min, max),
+	};
 	return out;
 }
 
@@ -75,22 +95,36 @@ static inline double vec3_dot(const vec3_t *a, const vec3_t *b) {
 	return a->x * b->x + a->y * b->y + a->z * b->z;
 }
 
-/* Compute the cross product between two vectors. */
 static inline void vec3_cross(vec3_t *dest, const vec3_t *a, const vec3_t *b) {
 	dest->x = a->y * b->z - a->z * b->y;
 	dest->y = a->z * b->x - a->x * b->z;
 	dest->z = a->x * b->y - a->y * b->x;
 }
 
-/* Compute the length of a vector. */
-static inline double vec3_length(const vec3_t *v) {
-	return sqrt(vec3_dot(v, v));
+static inline double vec3_length_squared(const vec3_t *v) {
+	return vec3_dot(v, v);
 }
 
-/* Normalize a vector to be a unit vector. */
+static inline double vec3_length(const vec3_t *v) {
+	return sqrt(vec3_length_squared(v));
+}
+
 static inline vec3_t vec3_normalize(const vec3_t *v) {
 	double length = 1 / vec3_length(v);
 	return vec3_mul(v, length);
+}
+
+static inline vec3_t vec3_rand_in_unit_sphere() {
+	while (1) {
+		vec3_t v = vec3_rand_rand(-1, 1);
+		if (vec3_length_squared(&v) >= 1.0) continue;
+		return v;
+	}
+}
+
+static inline vec3_t vec3_rand_unit_vector() {
+	vec3_t v = vec3_rand_in_unit_sphere();
+	return vec3_normalize(&v);
 }
 
 #endif /* MATH_H */
